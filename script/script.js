@@ -20,14 +20,14 @@ let inputArray = [
     },
     {
         inputId: 'email',
-        regExp: /^[\w\.\-]+@[\w\.]+$/,
+        regExp: /^[\w\.\-]+@[\w]+\.[\w\.]+$/,
         isValid: false
     }
 ];
 let userIndex;
 
 getAddButton.addEventListener('click', addUser);
-
+setValidation(inputArray);
 
 function addUser() {
     let userObj = {
@@ -41,20 +41,28 @@ function addUser() {
         render(usersList);
     }
 }
-function checkValidation(inputArray) {
+function setValidation(inputArray) {
     inputArray.forEach(elem => {
-        if (elem.regExp.test(getID(elem.inputId).value)) {
-            getID(elem.inputId).classList.add('is-valid');
-            getID(elem.inputId).classList.remove('is-invalid');
-            elem.isValid = true;
-        } else {
-            getID(elem.inputId).classList.add('is-invalid');
-            getID(elem.inputId).classList.remove('is-valid');
-            elem.isValid = false;
-        }
+        getID(elem.inputId).addEventListener('focusout', () => {
+
+            if (elem.regExp.test(getID(elem.inputId).value)) {
+                getID(elem.inputId).classList.add('is-valid');
+                getID(elem.inputId).classList.remove('is-invalid');
+                elem.isValid = true;
+            } else {
+                getID(elem.inputId).classList.add('is-invalid');
+                getID(elem.inputId).classList.remove('is-valid');
+                elem.isValid = false;
+            }
+        });
     });
-    return inputArray.every(({ isValid }) => isValid);
+     console.log(inputArray);
+     console.log(inputArray.every(({ isValid }) => isValid));
+    // return inputArray.every(({ isValid }) => isValid);
 }
+function checkValidation(inputArray) {
+    return inputArray.every(({ isValid }) => isValid);
+};
 function render(usersList) {
     tableBody.innerHTML = '';
     usersList.forEach((elem, id) => {
@@ -90,6 +98,7 @@ function editUser(event) {
     getSaveButton.addEventListener('click', saveEditUser);
 }
 function saveEditUser() {
+    if (checkValidation(inputArray)) {
     let editData = {
         login: getID('login').value,
         password: getID('password').value,
@@ -100,6 +109,7 @@ function saveEditUser() {
     getSaveButton.classList.add('hidden');
     clearForm();
     render(usersList);
+}
 }
 function clearForm() {
     getForm.reset();
