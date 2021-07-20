@@ -1,4 +1,3 @@
-const getID = id => document.getElementById(id);
 const getTableBody = document.getElementById('tableBody');
 const getAddButton = document.getElementById('addButton');
 const getSaveButton = document.getElementById('saveButton');
@@ -35,9 +34,9 @@ function checkValidation() {
 
 function getFormData() {
     return {
-        login: getID('login').value,
-        password: getID('password').value,
-        email: getID('email').value,
+        login: getLoginInput.value,
+        password: getPasswordInput.value,
+        email: getEmailInput.value,
     };
 }
 function addUser() {
@@ -76,9 +75,9 @@ function deleteUser(event) {
 function editUser(event) {
     let targetRow = event.target.closest('tr');
     userIndex = targetRow.getAttribute('data-id');
-    getID('login').value = usersList[userIndex].login;
-    getID('password').value = usersList[userIndex].password;
-    getID('email').value = usersList[userIndex].email;
+    getLoginInput.value = usersList[userIndex].login;
+    getPasswordInput.value = usersList[userIndex].password;
+    getEmailInput.value = usersList[userIndex].email;
     getAddButton.classList.add('hidden');
     getSaveButton.classList.remove('hidden');
     getSaveButton.addEventListener('click', saveEditUser);
