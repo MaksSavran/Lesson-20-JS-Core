@@ -3,66 +3,52 @@ const getTableBody = document.getElementById('tableBody');
 const getAddButton = document.getElementById('addButton');
 const getSaveButton = document.getElementById('saveButton');
 const getForm = document.getElementById('form');
+const getLoginInput = document.getElementById('login');
+const getPasswordInput = document.getElementById('password');
+const getEmailInput = document.getElementById('email');
 const editButoon = `<button type="button" class="btn btn-warning" id="editButton">Edit</button>`;
 const deleteButton = `<button type="button" class="btn btn-danger" id="deleteButton">Delete</button>`;
 
 let usersList = [];
-let inputArray = [
-    {
-        inputId: 'login',
-        regExp: /^[a-zA-Z]{4,16}$/,
-        isValid: false
-    },
-    {
-        inputId: 'password',
-        regExp: /^[\w\-\.]{4,16}$/,
-        isValid: false
-    },
-    {
-        inputId: 'email',
-        regExp: /^[\w\.\-]+@[\w]+\.[\w\.]+$/,
-        isValid: false
-    }
-];
 let userIndex;
 
 getAddButton.addEventListener('click', addUser);
-setValidation(inputArray);
+getLoginInput.addEventListener('blur', () => inputValidation(getLoginInput));
+getPasswordInput.addEventListener('blur', () => inputValidation(getPasswordInput));
+getEmailInput.addEventListener('blur', () => inputValidation(getEmailInput));
 
-function addUser() {
-    let userObj = {
+function inputValidation(selector) {
+    let regExp = new RegExp(selector.pattern);
+    if (regExp.test(selector.value)) {
+        selector.classList.add('is-valid');
+        selector.classList.remove('is-invalid');
+        return true;
+    } else {
+        selector.classList.add('is-invalid');
+        selector.classList.remove('is-valid');
+        return false;
+    }
+}
+function checkValidation() {
+    return inputValidation(getLoginInput) && inputValidation(getPasswordInput) && inputValidation(getEmailInput);
+}
+
+function getFormData() {
+    return {
         login: getID('login').value,
         password: getID('password').value,
         email: getID('email').value,
     };
-    if (checkValidation(inputArray)) {
+}
+function addUser() {
+    if (checkValidation()) {
+        let userObj = getFormData();
         usersList.push(userObj);
         clearForm();
         render(usersList);
     }
 }
-function setValidation(inputArray) {
-    inputArray.forEach(elem => {
-        getID(elem.inputId).addEventListener('focusout', () => {
 
-            if (elem.regExp.test(getID(elem.inputId).value)) {
-                getID(elem.inputId).classList.add('is-valid');
-                getID(elem.inputId).classList.remove('is-invalid');
-                elem.isValid = true;
-            } else {
-                getID(elem.inputId).classList.add('is-invalid');
-                getID(elem.inputId).classList.remove('is-valid');
-                elem.isValid = false;
-            }
-        });
-    });
-     console.log(inputArray);
-     console.log(inputArray.every(({ isValid }) => isValid));
-    // return inputArray.every(({ isValid }) => isValid);
-}
-function checkValidation(inputArray) {
-    return inputArray.every(({ isValid }) => isValid);
-};
 function render(usersList) {
     tableBody.innerHTML = '';
     usersList.forEach((elem, id) => {
@@ -98,23 +84,18 @@ function editUser(event) {
     getSaveButton.addEventListener('click', saveEditUser);
 }
 function saveEditUser() {
-    if (checkValidation(inputArray)) {
-    let editData = {
-        login: getID('login').value,
-        password: getID('password').value,
-        email: getID('email').value,
-    };
-    usersList.splice(userIndex, 1, editData);
-    getAddButton.classList.remove('hidden');
-    getSaveButton.classList.add('hidden');
-    clearForm();
-    render(usersList);
-}
+    if (checkValidation()) {
+        let editData = getFormData();
+        usersList.splice(userIndex, 1, editData);
+        getAddButton.classList.remove('hidden');
+        getSaveButton.classList.add('hidden');
+        clearForm();
+        render(usersList);
+    }
 }
 function clearForm() {
     getForm.reset();
-    inputArray.forEach(elem => {
-        elem.isValid = false;
-        getID(elem.inputId).classList.remove('is-valid');
-    });
+    getLoginInput.classList.remove('is-valid');
+    getPasswordInput.classList.remove('is-valid');
+    getEmailInput.classList.remove('is-valid');
 }

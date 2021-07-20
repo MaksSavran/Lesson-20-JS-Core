@@ -20,21 +20,21 @@
         <form class="needs-validation" id="form" novalidate>
           <div class="mb-3 position-relative">
             <label for="login" class="form-label">Login</label>
-            <input type="text" class="form-control" id="login" placeholder="Enter login">
+            <input type="text" class="form-control" id="login" pattern="^[a-zA-Z]{4,16}$" placeholder="Enter login">
             <div class="invalid-tooltip">
               Please provide a valid login.
             </div>
           </div>
           <div class="mb-3 position-relative">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter password">
+            <input type="password" class="form-control" id="password" pattern="^[\w\-\.]{4,16}$" placeholder="Enter password">
             <div class="invalid-tooltip">
               Please provide a valid password.
             </div>
           </div>
           <div class="mb-3 position-relative">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter email">
+            <input type="email" class="form-control" id="email" pattern="^[\w\.\-]+@[\w]+\.[\w\.]+$" placeholder="Enter email">
             <div class="invalid-tooltip">
               Please provide a valid Email.
             </div>
