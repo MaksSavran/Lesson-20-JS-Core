@@ -1,42 +1,44 @@
-const getTableBody = document.getElementById('tableBody');
-const getAddButton = document.getElementById('addButton');
-const getSaveButton = document.getElementById('saveButton');
-const getForm = document.getElementById('form');
-const getLoginInput = document.getElementById('login');
-const getPasswordInput = document.getElementById('password');
-const getEmailInput = document.getElementById('email');
+const tableBody = document.getElementById('tableBody');
+const addButton = document.getElementById('addButton');
+const saveButton = document.getElementById('saveButton');
+const form = document.getElementById('form');
+const loginInput = document.getElementById('login');
+const passwordInput = document.getElementById('password');
+const emailInput = document.getElementById('email');
 const editButoon = `<button type="button" class="btn btn-warning" id="editButton">Edit</button>`;
 const deleteButton = `<button type="button" class="btn btn-danger" id="deleteButton">Delete</button>`;
 
 let usersList = [];
-let userIndex;
+let currentUserIndex;
 
-getAddButton.addEventListener('click', addUser);
-getLoginInput.addEventListener('blur', () => inputValidation(getLoginInput));
-getPasswordInput.addEventListener('blur', () => inputValidation(getPasswordInput));
-getEmailInput.addEventListener('blur', () => inputValidation(getEmailInput));
+addButton.addEventListener('click', addUser);
+saveButton.addEventListener('click', saveEditUser);
+loginInput.addEventListener('change', () => validateInput(loginInput));
+passwordInput.addEventListener('change', () => validateInput(passwordInput));
+emailInput.addEventListener('change', () => validateInput(emailInput));
 
-function inputValidation(selector) {
-    let regExp = new RegExp(selector.pattern);
-    if (regExp.test(selector.value)) {
-        selector.classList.add('is-valid');
-        selector.classList.remove('is-invalid');
-        return true;
+function validateInput(element) {
+    let regExp = new RegExp(element.pattern);
+    showValidationTooltip(element, regExp.test(element.value));
+    return regExp.test(element.value) ? true : false;
+}
+function showValidationTooltip(element, isValid) {
+    if (isValid) {
+        element.classList.add('is-valid');
+        element.classList.remove('is-invalid');
     } else {
-        selector.classList.add('is-invalid');
-        selector.classList.remove('is-valid');
-        return false;
+        element.classList.add('is-invalid');
+        element.classList.remove('is-valid');
     }
 }
 function checkValidation() {
-    return inputValidation(getLoginInput) && inputValidation(getPasswordInput) && inputValidation(getEmailInput);
+    return validateInput(loginInput) && validateInput(passwordInput) && validateInput(emailInput);
 }
-
 function getFormData() {
     return {
-        login: getLoginInput.value,
-        password: getPasswordInput.value,
-        email: getEmailInput.value,
+        login: loginInput.value,
+        password: passwordInput.value,
+        email: emailInput.value,
     };
 }
 function addUser() {
@@ -47,18 +49,17 @@ function addUser() {
         render(usersList);
     }
 }
-
 function render(usersList) {
     tableBody.innerHTML = '';
-    usersList.forEach((elem, id) => {
+    usersList.forEach((user, id) => {
         let tr = document.createElement('tr');
         tr.setAttribute('data-id', `${id}`);
         tableBody.appendChild(tr);
         tr.innerHTML =
             `<th>${id + 1}</th>
-        <td>${elem.login}</td>
-        <td>${elem.password}</td>
-        <td>${elem.email}</td>
+        <td>${user.login}</td>
+        <td>${user.password}</td>
+        <td>${user.email}</td>
         <td>${editButoon}</td>
         <td>${deleteButton}</td>`;
         tr.querySelector('#deleteButton').addEventListener('click', deleteUser);
@@ -68,33 +69,33 @@ function render(usersList) {
 }
 function deleteUser(event) {
     let targetRow = event.target.closest('tr');
-    userIndex = targetRow.getAttribute('data-id');
-    usersList.splice(userIndex, 1);
+    currentUserIndex = targetRow.getAttribute('data-id');
+    usersList.splice(currentUserIndex, 1);
     render(usersList);
 }
 function editUser(event) {
     let targetRow = event.target.closest('tr');
-    userIndex = targetRow.getAttribute('data-id');
-    getLoginInput.value = usersList[userIndex].login;
-    getPasswordInput.value = usersList[userIndex].password;
-    getEmailInput.value = usersList[userIndex].email;
-    getAddButton.classList.add('hidden');
-    getSaveButton.classList.remove('hidden');
-    getSaveButton.addEventListener('click', saveEditUser);
+    currentUserIndex = targetRow.getAttribute('data-id');
+    loginInput.value = usersList[currentUserIndex].login;
+    passwordInput.value = usersList[currentUserIndex].password;
+    emailInput.value = usersList[currentUserIndex].email;
+    addButton.classList.toggle('hidden');
+    saveButton.classList.toggle('hidden');
+
 }
 function saveEditUser() {
     if (checkValidation()) {
         let editData = getFormData();
-        usersList.splice(userIndex, 1, editData);
-        getAddButton.classList.remove('hidden');
-        getSaveButton.classList.add('hidden');
+        usersList.splice(currentUserIndex, 1, editData);
+        addButton.classList.toggle('hidden');
+        saveButton.classList.toggle('hidden');
         clearForm();
         render(usersList);
     }
 }
 function clearForm() {
-    getForm.reset();
-    getLoginInput.classList.remove('is-valid');
-    getPasswordInput.classList.remove('is-valid');
-    getEmailInput.classList.remove('is-valid');
+    form.reset();
+    loginInput.classList.remove('is-valid');
+    passwordInput.classList.remove('is-valid');
+    emailInput.classList.remove('is-valid');
 }
