@@ -13,9 +13,12 @@ let currentUserIndex;
 
 addButton.addEventListener('click', addUser);
 saveButton.addEventListener('click', saveEditUser);
-loginInput.addEventListener('change', () => validateInput(loginInput));
-passwordInput.addEventListener('change', () => validateInput(passwordInput));
-emailInput.addEventListener('change', () => validateInput(emailInput));
+loginInput.addEventListener('keyup', () => validateInput(loginInput));
+//loginInput.addEventListener('change', () => validateInput(loginInput));
+passwordInput.addEventListener('keyup', () => validateInput(passwordInput));
+//passwordInput.addEventListener('change', () => validateInput(passwordInput));
+emailInput.addEventListener('keyup', () => validateInput(emailInput));
+//emailInput.addEventListener('change', () => validateInput(emailInput));
 
 function validateInput(element) {
     let regExp = new RegExp(element.pattern);
